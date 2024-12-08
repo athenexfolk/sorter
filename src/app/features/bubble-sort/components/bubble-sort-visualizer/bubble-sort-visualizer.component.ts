@@ -21,6 +21,9 @@ export class BubbleSortVisualizerComponent {
   running = [0];
 
   async run() {
+    if (this.isRunning) {
+      return;
+    }
     this.isRunning = true;
     await this.bubbleSort.mutateSortAsync(this.array, 10, this.running);
     this.isRunning = false;
@@ -35,6 +38,9 @@ export class BubbleSortVisualizerComponent {
   }
 
   random() {
-    this.array = getRandomizedRange(1,50);
+    if (this.isRunning) {
+      return;
+    }
+    this.array = getRandomizedRange(1, 50);
   }
 }
