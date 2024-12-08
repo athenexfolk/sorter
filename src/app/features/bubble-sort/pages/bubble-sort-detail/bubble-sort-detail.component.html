@@ -53,99 +53,11 @@
   <h2>ตัวอย่าง</h2>
   <section>
     <h3>Stepper</h3>
-    <div class="grid grid-cols-3 gap-2">
-      @for (preset of presets; track $index) {
-      <button
-        (click)="setArrayWith(preset.array)"
-        class="px-4 py-2 rounded-lg bg-blue-700 text-white"
-      >
-        {{ preset.label }}
-      </button>
-      }
-    </div>
-    @if (currentStep()) {
-    <div class="text-sm text-center p-4">
-      @if (currentStep().action === "start") {
-      <span>เริ่มต้น</span>
-      } @if (currentStep().action === "end") {
-      <span>เสร็จสิ้น</span>
-      } @if (currentStep().action === "compare") {
-      <span>
-        เปรียบเทียบตำแหน่งที่ {{ currentStep().highlight[0] }} กับ
-        {{ currentStep().highlight[1] }} ({{
-          currentStep().array[currentStep().highlight[0]]
-        }}
-        > {{ currentStep().array[currentStep().highlight[1]] }}?)
-      </span>
-      } @if (currentStep().action === "swap") {
-      <span>
-        เพราะว่า {{ currentStep().array[currentStep().highlight[1]] }} >
-        {{ currentStep().array[currentStep().highlight[0]] }}
-        สลับค่าของตำแหน่งที่ {{ currentStep().highlight[0] }} กับ
-        {{ currentStep().highlight[1] }}
-      </span>
-      }
-    </div>
-    <span>{{ currentStep().action === "start" ? "" : "" }}</span>
-    <div class="flex gap-2 justify-center items-center">
-      @for (item of currentStep().array; track $index) {
-      <div class="space-y-1">
-        <div
-          class="size-12 md:size-16 flex justify-center items-center rounded-lg"
-          [ngClass]="[
-            currentStep().action === 'end'
-              ? 'bg-green-200'
-              : currentStep().highlight.includes($index)
-              ? currentStep().action === 'compare'
-                ? 'bg-yellow-200'
-                : 'bg-blue-200'
-              : 'bg-zinc-200'
-          ]"
-        >
-          {{ item }}
-        </div>
-        <p class="text-xs text-center">{{ $index }}</p>
-      </div>
-      }
-    </div>
-    }
-    <app-step-controller
-      (first)="first()"
-      (last)="last()"
-      (next)="next()"
-      (prev)="prev()"
-      [disabledPrev]="currentIndex() === 0"
-      [disabledNext]="currentIndex() === steps().length - 1"
-    />
+    <app-bubble-sort-stepper />
   </section>
   <hr />
   <section class="space-y-2">
     <h3>Visualizer</h3>
-    <div class="flex items-center gap-2">
-      <button
-        (click)="runVz()"
-        class="px-4 py-2 rounded-lg bg-blue-700 text-white"
-      >
-        เริ่ม
-      </button>
-      <button
-        (click)="resetVz()"
-        [disabled]="isRunning"
-        class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200"
-      >
-        รีเซ็ต
-      </button>
-    </div>
-    <div class="flex items-end gap-1 h-52 relative">
-      @for (item of vzArray; track $index) {
-      <div
-        [style.height]="item * 2 + '%'"
-        [style.background-color]="
-          'hsl(' + (item / vzArray.length) * 270 + ', 100%, 50%)'
-        "
-        class="grow"
-      ></div>
-      }
-    </div>
+    <app-bubble-sort-visualizer />
   </section>
 </article>

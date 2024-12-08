@@ -1,0 +1,60 @@
+<div class="grid grid-cols-3 gap-2">
+  @for (preset of presets; track $index) {
+  <button
+    (click)="setArrayWith(preset.array)"
+    class="px-4 py-2 rounded-lg bg-blue-700 text-white"
+  >
+    {{ preset.label }}
+  </button>
+  }
+  <button
+    (click)="randomArray()"
+    class="px-4 py-2 rounded-lg bg-blue-700 text-white col-span-3"
+  >
+    สุ่ม
+  </button>
+</div>
+@if (currentStep()) { @let action = currentStep().action; @let highlight =
+currentStep().highlight; @let array = currentStep().array;
+
+<div class="text-sm text-center p-4">
+  @if (action === "start") {
+  <span>เริ่มต้น</span>
+  } @if (action === "end") {
+  <span>เสร็จสิ้น</span>
+  } @if (action === "compare") {
+  <span>
+    เปรียบเทียบตำแหน่งที่ {{ highlight[0] }} กับ {{ highlight[1] }} ({{
+      array[highlight[0]]
+    }}
+    > {{ array[highlight[1]] }}?)
+  </span>
+  } @if (action === "swap") {
+  <span>
+    เพราะว่า {{ array[highlight[1]] }} >
+    {{ array[highlight[0]] }}
+    สลับค่าของตำแหน่งที่ {{ highlight[0] }} กับ
+    {{ highlight[1] }}
+  </span>
+  }
+</div>
+<div class="flex items-end gap-1 h-52 relative">
+  @for (item of array; track $index) {
+  <div
+    [style.height]="item * 20 + '%'"
+    class="grow flex justify-center items-end p-1"
+    [ngClass]="assignClass($index)"
+  >
+    {{ item }}
+  </div>
+  }
+</div>
+}
+<app-step-controller
+  (first)="first()"
+  (last)="last()"
+  (next)="next()"
+  (prev)="prev()"
+  [disabledPrev]="currentIndex() === 0"
+  [disabledNext]="currentIndex() === steps().length - 1"
+/>
