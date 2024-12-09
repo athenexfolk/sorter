@@ -16,6 +16,10 @@ export class LandingComponent {
     {
       path: 'selection-sort',
       label: 'Selection Sort',
+    },
+    {
+      path: 'insertion-sort',
+      label: 'Insertion Sort',
     }
   ]
 }
