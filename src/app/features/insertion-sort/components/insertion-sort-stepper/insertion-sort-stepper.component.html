@@ -9,26 +9,41 @@
     </button>
     }
     <button
-      (click)="randomArray()"
+      (click)="setArrayWith(random())"
       class="px-4 py-2 rounded-lg bg-blue-700 text-white col-span-3"
     >
       สุ่ม
     </button>
   </div>
+  <ul class="flex flex-wrap items-center gap-4 text-xs">
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-yellow-200"></span>เปรียบเทียบ
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-blue-200"></span>แทรก
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-purple-200"></span>ค่าอ้างอิง
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-green-200"></span>เรียงสำเร็จแล้ว
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-zinc-200"></span>ไม่มี Action
+    </li>
+  </ul>
   <div>
     @let action = currentStep().action; @let array = currentStep().array; @let
-    memory = currentStep().memory;
+    highlight = currentStep().highlight;@let memory = currentStep().memory;
 
-    <div class="flex gap-2 justify-center items-center">
+    <div class="flex items-end gap-1 h-52 relative">
       @for (item of array; track $index) {
-      <div class="space-y-1">
-        <div
-          class="size-12 md:size-16 flex justify-center items-center rounded-lg"
-          [ngClass]="assignClass($index)"
-        >
-          {{ item }}
-        </div>
-        <p class="text-xs text-center">{{ $index }}</p>
+      <div
+        [style.height]="item * 20 + '%'"
+        class="grow flex justify-center items-end p-1"
+        [ngClass]="assignClass($index)"
+      >
+        {{ item }}
       </div>
       }
     </div>
@@ -50,7 +65,11 @@
         } @if (action === "def") {
         <span>บรรจุ key = {{ memory?.key }} ลง Memory</span>
         } @if (action === "move") {
-        <span> พบค่าทางซ้ายที่มากกกว่าค่าใน Memory ทำการขยับตำแหน่ง </span>
+        <span>
+          พบค่าทางซ้าย ({{ array[highlight[0]] }}) ที่มากกกว่าค่าใน Memory ({{
+            memory?.key
+          }}) ทำการขยับตำแหน่ง
+        </span>
         } @if (action === "insert") {
         <span>
           อยู่ในตำแหน่งที่เหมาะสมแล้ว (ไม่มีค่าทางซ้ายที่มากกกว่าค่าใน Memory )

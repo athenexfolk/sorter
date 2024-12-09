@@ -1,60 +1,96 @@
-<div class="grid grid-cols-3 gap-2">
-  @for (preset of presets; track $index) {
-  <button
-    (click)="setArrayWith(preset.array)"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white"
-  >
-    {{ preset.label }}
-  </button>
-  }
-  <button
-    (click)="randomArray()"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white col-span-3"
-  >
-    สุ่ม
-  </button>
-</div>
-@if (currentStep()) { @let action = currentStep().action; @let highlight =
-currentStep().highlight; @let array = currentStep().array;
-
-<div class="text-sm text-center p-4">
-  @if (action === "start") {
-  <span>เริ่มต้น</span>
-  } @if (action === "end") {
-  <span>เสร็จสิ้น</span>
-  } @if (action === "compare") {
-  <span>
-    เปรียบเทียบตำแหน่งที่ {{ highlight[0] }} กับ {{ highlight[1] }} ({{
-      array[highlight[0]]
-    }}
-    > {{ array[highlight[1]] }}?)
-  </span>
-  } @if (action === "swap") {
-  <span>
-    เพราะว่า {{ array[highlight[1]] }} >
-    {{ array[highlight[0]] }}
-    สลับค่าของตำแหน่งที่ {{ highlight[0] }} กับ
-    {{ highlight[1] }}
-  </span>
-  }
-</div>
-<div class="flex items-end gap-1 h-52 relative">
-  @for (item of array; track $index) {
-  <div
-    [style.height]="item * 20 + '%'"
-    class="grow flex justify-center items-end p-1"
-    [ngClass]="assignClass($index)"
-  >
-    {{ item }}
+<div class="space-y-4">
+  <div class="grid grid-cols-3 gap-2">
+    @for (preset of presets; track $index) {
+    <button
+      (click)="setArrayWith(preset.array)"
+      class="px-4 py-2 rounded-lg bg-blue-700 text-white"
+    >
+      {{ preset.label }}
+    </button>
+    }
+    <button
+      (click)="setArrayWith(random())"
+      class="px-4 py-2 rounded-lg bg-blue-700 text-white col-span-3"
+    >
+      สุ่ม
+    </button>
   </div>
-  }
+  <ul class="flex flex-wrap items-center gap-4 text-xs">
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-yellow-200"></span>เปรียบเทียบ
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-blue-200"></span>สลับ
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-red-200"></span>ไม่สลับ
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-green-200"></span>เรียงสำเร็จแล้ว
+    </li>
+    <li class="flex items-center gap-2">
+      <span class="size-4 rounded-full bg-zinc-200"></span>ไม่มี Action
+    </li>
+  </ul>
+  <div>
+    @let action = currentStep().action; @let highlight =
+    currentStep().highlight; @let array = currentStep().array; @let memory =
+    currentStep().memory;
+
+    <div class="flex items-end gap-1 h-52 relative">
+      @for (item of array; track $index) {
+      <div
+        [style.height]="item * 20 + '%'"
+        class="grow flex justify-center items-end p-1"
+        [ngClass]="assignClass($index)"
+      >
+        {{ item }}
+      </div>
+      }
+    </div>
+
+    <app-step-controller
+      (first)="first()"
+      (last)="last()"
+      (next)="next()"
+      (prev)="prev()"
+      [disabledPrev]="currentIndex() === 0"
+      [disabledNext]="currentIndex() === steps().length - 1"
+    />
+
+    <div class="space-y-2">
+      <div class="text-sm text-center">
+        @if (action === "start") {
+        <span>เริ่มต้น</span>
+        } @if (action === "end") {
+        <span>เสร็จสิ้น</span>
+        } @if (action === "compare") {
+        <span>
+          เปรียบเทียบ [{{ highlight[0] }}] กับ [{{ highlight[1] }}] <br />
+          {{ array[highlight[0]] }} > {{ array[highlight[1]] }}?
+        </span>
+        } @if (action === "swap") {
+        <span>
+          สลับกัน เนื่องจาก {{ array[highlight[1]] }} >
+          {{ array[highlight[0]] }} เป็นจริง
+        </span>
+        } @if (action === "noswap") {
+        <span>
+          ไม่สลับกัน เนื่องจาก {{ array[highlight[0]] }} >
+          {{ array[highlight[1]] }} เป็นเท็จ
+        </span>
+        } @if (action === "break") {
+        <span> ไม่มีการสลับในหนึ่งรอบใหญ่ (swapped เป็น false จนถึงตอนนี้) อาร์เรย์จัดเรียงสำเร็จ </span>
+        }
+      </div>
+      <div class="bg-zinc-100 rounded-lg px-4 py-2">
+        <span class="block font-semibold">Memory</span>
+        @if (memory) {
+        <span class="text-xs">swapped = {{ memory.swapped }}</span>
+        } @else {
+        <span class="text-xs">ยังไม่มีการใช้ Memory</span>
+        }
+      </div>
+    </div>
+  </div>
 </div>
-}
-<app-step-controller
-  (first)="first()"
-  (last)="last()"
-  (next)="next()"
-  (prev)="prev()"
-  [disabledPrev]="currentIndex() === 0"
-  [disabledNext]="currentIndex() === steps().length - 1"
-/>

@@ -1,18 +1,23 @@
 import { Injectable } from '@angular/core';
+import { ISort, ISortTrack } from '../../../core/abstracts/sort';
 
-export type InsertionSortTrack = {
+export interface InsertionSortTrack extends ISortTrack {
   array: number[];
   highlight: number[];
+  /* Action Definition
+      Def     = Defined key index
+      Move    = Move value when found greater value
+      Insert  = Insert value of key index to suit position */
   action: 'def' | 'move' | 'insert' | 'start' | 'end';
   memory?: {
     key: number;
   };
-};
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class InsertionSortService {
+export class InsertionSortService implements ISort<InsertionSortTrack> {
   mutateSort(array: number[]): number[] {
     const n = array.length;
     for (let i = 1; i < n; i++) {
@@ -67,7 +72,7 @@ export class InsertionSortService {
     return array;
   }
 
-  trackSort(arr: number[]): {
+  track(arr: number[]): {
     sortedArray: number[];
     steps: InsertionSortTrack[];
   } {
@@ -106,10 +111,9 @@ export class InsertionSortService {
             key,
           },
         });
-
       }
       array[j + 1] = key;
-      
+
       steps.push({
         array: [...array],
         highlight: [j + 1],

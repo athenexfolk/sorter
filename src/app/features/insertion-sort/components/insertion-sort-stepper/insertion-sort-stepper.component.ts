@@ -1,8 +1,11 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { InsertionSortService } from '../../services/insertion-sort.service';
-import { getRandomizedRange } from '../../../../shared/utils/random-array';
+import { Component, inject } from '@angular/core';
+import {
+  InsertionSortService,
+  InsertionSortTrack,
+} from '../../services/insertion-sort.service';
 import { StepControllerComponent } from '../../../../shared/components/step-controller/step-controller.component';
 import { NgClass } from '@angular/common';
+import { Stepper } from '../../../../core/abstracts/stepper';
 
 @Component({
   selector: 'app-insertion-sort-stepper',
@@ -10,61 +13,8 @@ import { NgClass } from '@angular/common';
   templateUrl: './insertion-sort-stepper.component.html',
   styleUrl: './insertion-sort-stepper.component.css',
 })
-export class InsertionSortStepperComponent {
-  private readonly insertionSort = inject(InsertionSortService);
-  presets = [
-    {
-      label: 'Worst',
-      array: [5, 4, 3, 2, 1],
-    },
-    {
-      label: 'Average',
-      array: [2, 4, 5, 1, 3],
-    },
-    {
-      label: 'Best',
-      array: [1, 2, 3, 4, 5],
-    },
-  ];
-
-  array = signal(this.presets[1].array);
-  tracker = computed(() => this.insertionSort.trackSort(this.array()));
-  sortedArray = computed(() => this.tracker().sortedArray);
-  steps = computed(() => this.tracker().steps);
-  currentIndex = signal(0);
-  currentStep = computed(() => this.steps()[this.currentIndex()]);
-
-  next() {
-    if (this.currentIndex() === this.steps().length - 1) {
-      return;
-    }
-    this.currentIndex.update((i) => i + 1);
-  }
-
-  prev() {
-    if (this.currentIndex() === 0) {
-      return;
-    }
-    this.currentIndex.update((i) => i - 1);
-  }
-
-  first() {
-    this.currentIndex.set(0);
-  }
-
-  last() {
-    this.currentIndex.set(this.steps().length - 1);
-  }
-
-  setArrayWith(array: number[]) {
-    this.array.set(array);
-    this.currentIndex.set(0);
-  }
-
-  randomArray() {
-    this.array.set(getRandomizedRange(1, 5));
-    this.currentIndex.set(0);
-  }
+export class InsertionSortStepperComponent extends Stepper<InsertionSortTrack> {
+  protected override sorter = inject(InsertionSortService);
 
   assignClass(index: number) {
     const { action, highlight } = this.currentStep();

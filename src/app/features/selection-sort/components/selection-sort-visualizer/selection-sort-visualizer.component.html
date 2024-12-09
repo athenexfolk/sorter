@@ -1,38 +1,8 @@
-<div class="flex items-center gap-2">
-  <button
-    (click)="run()"
-    [disabled]="isRunning"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200"
-  >
-    เริ่ม
-  </button>
-  <button
-    (click)="reset()"
-    [disabled]="isRunning"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200"
-  >
-    รีเซ็ต
-  </button>
-  <button
-    (click)="random()"
-    [disabled]="isRunning"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200"
-  >
-    สุ่ม
-  </button>
-</div>
-<div class="flex items-end gap-1 h-52 relative">
-  @for (item of array; track $index) {
-  <div
-    [style.height]="item * 2 + '%'"
-    [style.background-color]="
-      'hsl(' +
-      (item / array.length) * 270 +
-      ', 100%, ' +
-      (running[0] === $index && isRunning ? '0' : '50') +
-      '%)'
-    "
-    class="grow"
-  ></div>
-  }
-</div>
+<app-sort-visualizer
+  [array]="array"
+  [flag]="isRunning"
+  [running]="running"
+  (run)="run()"
+  (reset)="reset()"
+  (random)="random()"
+/>

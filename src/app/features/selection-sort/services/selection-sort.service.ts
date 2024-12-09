@@ -1,17 +1,26 @@
 import { Injectable } from '@angular/core';
+import { ISort, ISortTrack } from '../../../core/abstracts/sort';
 
-export type SelectionSortTrack = {
+export interface SelectionSortTrack extends ISortTrack {
   array: number[];
   highlight: number[];
-  action: 'compare' | 'def' | 'min' | 'swap' | 'start' | 'end';
+  /* Action Definition
+      Def     = Defined minimum value
+      Compare = Comparing minimum value with current value
+      Min     = Found new minimum value
+      Swap    = Swapping old minimum value with new minimum value */
+  action: 'def' | 'compare' | 'min' | 'swap' | 'start' | 'end';
   oldMin: number;
   min: number;
-};
+  memory?: {
+    minIndex: number;
+  };
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class SelectionSortService {
+export class SelectionSortService implements ISort<SelectionSortTrack> {
   mutateSort(array: number[]): number[] {
     let n = array.length;
     for (let i = 0; i < n - 1; i++) {
@@ -69,7 +78,7 @@ export class SelectionSortService {
     return array;
   }
 
-  trackSort(arr: number[]): {
+  track(arr: number[]): {
     sortedArray: number[];
     steps: SelectionSortTrack[];
   } {
@@ -93,6 +102,9 @@ export class SelectionSortService {
         action: 'def',
         min: minIndex,
         oldMin: i,
+        memory: {
+          minIndex,
+        },
       });
       for (let j = i + 1; j < n; j++) {
         steps.push({
@@ -101,6 +113,9 @@ export class SelectionSortService {
           action: 'compare',
           min: minIndex,
           oldMin: i,
+          memory: {
+            minIndex,
+          },
         });
         if (array[j] < array[minIndex]) {
           steps.push({
@@ -109,6 +124,9 @@ export class SelectionSortService {
             action: 'min',
             min: j,
             oldMin: i,
+            memory: {
+              minIndex,
+            },
           });
           minIndex = j;
         }
@@ -121,6 +139,9 @@ export class SelectionSortService {
           action: 'swap',
           min: minIndex,
           oldMin: i,
+          memory: {
+            minIndex,
+          },
         });
       }
     }

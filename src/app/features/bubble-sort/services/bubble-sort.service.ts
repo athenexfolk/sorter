@@ -1,56 +1,24 @@
 import { Injectable } from '@angular/core';
+import { ISort, ISortTrack } from '../../../core/abstracts/sort';
 
-export type BubbleSortTrack = {
+export interface BubbleSortTrack extends ISortTrack {
   array: number[];
   highlight: number[];
-  action: 'compare' | 'swap' | 'start' | 'end';
-};
+  /* Action Definition
+      Compare = Comparing two numbers
+      Swap    = Swapping two numbers when first is more than second
+      No Swap = No swaps are made in secondary loop
+      Break   = Stopping the sorting process when no swaps are made in one primary loop */
+  action: 'compare' | 'swap' | 'noswap' | 'break' | 'start' | 'end';
+  memory?: {
+    swapped: boolean;
+  };
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class BubbleSortService {
-  mutateSort(array: number[]): number[] {
-    const n = array.length;
-    let swapped: boolean;
-    for (let i = 0; i < n - 1; i++) {
-      swapped = false;
-      for (let j = 0; j < n - i - 1; j++) {
-        if (array[j] > array[j + 1]) {
-          [array[j], array[j + 1]] = [array[j + 1], array[j]];
-          swapped = true;
-        }
-      }
-      if (!swapped) break;
-    }
-    return array;
-  }
-
-  async mutateSortAsync(
-    array: number[],
-    ms: number = 10,
-    mutr?: number[]
-  ): Promise<number[]> {
-    const n = array.length;
-    let swapped: boolean;
-    for (let i = 0; i < n - 1; i++) {
-      swapped = false;
-      for (let j = 0; j < n - i - 1; j++) {
-        if (mutr && mutr[0] !== undefined) {
-          mutr[0] = j;
-        }
-        if (array[j] > array[j + 1]) {
-          [array[j], array[j + 1]] = [array[j + 1], array[j]];
-          swapped = true;
-        }
-
-        if (ms > 0) await new Promise((resolve) => setTimeout(resolve, ms));
-      }
-      if (!swapped) break;
-    }
-    return array;
-  }
-
+export class BubbleSortService implements ISort<BubbleSortTrack> {
   sort(arr: number[]): number[] {
     const n = arr.length;
     const array = [...arr];
@@ -68,7 +36,7 @@ export class BubbleSortService {
     return array;
   }
 
-  trackSort(arr: number[]): {
+  track(arr: number[]): {
     sortedArray: number[];
     steps: BubbleSortTrack[];
   } {
@@ -90,6 +58,9 @@ export class BubbleSortService {
           array: [...array],
           highlight: [j, j + 1],
           action: 'compare',
+          memory: {
+            swapped,
+          },
         });
         if (array[j] > array[j + 1]) {
           [array[j], array[j + 1]] = [array[j + 1], array[j]];
@@ -98,10 +69,32 @@ export class BubbleSortService {
             array: [...array],
             highlight: [j, j + 1],
             action: 'swap',
+            memory: {
+              swapped,
+            },
+          });
+        } else {
+          steps.push({
+            array: [...array],
+            highlight: [j, j + 1],
+            action: 'noswap',
+            memory: {
+              swapped,
+            },
           });
         }
       }
-      if (!swapped) break;
+      if (!swapped) {
+        steps.push({
+          array: [...array],
+          highlight: [],
+          action: 'break',
+          memory: {
+            swapped: false,
+          },
+        });
+        break;
+      }
     }
 
     steps.push({
@@ -114,5 +107,47 @@ export class BubbleSortService {
       sortedArray: array,
       steps,
     };
+  }
+
+  mutateSort(array: number[]): number[] {
+    const n = array.length;
+    let swapped: boolean;
+    for (let i = 0; i < n - 1; i++) {
+      swapped = false;
+      for (let j = 0; j < n - i - 1; j++) {
+        if (array[j] > array[j + 1]) {
+          [array[j], array[j + 1]] = [array[j + 1], array[j]];
+          swapped = true;
+        }
+      }
+      if (!swapped) break;
+    }
+    return array;
+  }
+
+  async mutateSortAsync(
+    array: number[],
+    speed: number = 10,
+    mutr?: number[]
+  ): Promise<number[]> {
+    const n = array.length;
+    let swapped: boolean;
+    for (let i = 0; i < n - 1; i++) {
+      swapped = false;
+      for (let j = 0; j < n - i - 1; j++) {
+        if (mutr && mutr[0] !== undefined) {
+          mutr[0] = j;
+        }
+        if (array[j] > array[j + 1]) {
+          [array[j], array[j + 1]] = [array[j + 1], array[j]];
+          swapped = true;
+        }
+
+        if (speed > 0)
+          await new Promise((resolve) => setTimeout(resolve, speed));
+      }
+      if (!swapped) break;
+    }
+    return array;
   }
 }

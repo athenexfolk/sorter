@@ -1,0 +1,57 @@
+<article class="p-2 md:p-4 py-8 prose prose-lg prose-zinc">
+  <h1>{{ detail().title }}</h1>
+  <h2>คำอธิบาย</h2>
+  <p>
+    {{ detail().description }}
+  </p>
+  <h2>ประสิทธิภาพ</h2>
+  <h3>เวลา (Time Complexity)</h3>
+  <div class="grid grid-cols-3 place-items-center">
+    <div class="flex flex-col gap-1">
+      <span class="text-sm">Worst</span>
+      <span [mathtex]="detail().complexity.time.worst"></span>
+    </div>
+    <div class="flex flex-col gap-1">
+      <span class="text-sm">Average</span>
+      <span [mathtex]="detail().complexity.time.average"></span>
+    </div>
+    <div class="flex flex-col gap-1">
+      <span class="text-sm">Best</span>
+      <span [mathtex]="detail().complexity.time.best"></span>
+    </div>
+  </div>
+  <p>
+    {{ detail().complexity.time.description }}
+  </p>
+  <h3>พื้นที่ (Space Complexity)</h3>
+  <div class="grid grid-cols-1 place-items-center">
+    <span [mathtex]="detail().complexity.space.average"></span>
+  </div>
+  <p>
+    {{ detail().complexity.space.description }}
+  </p>
+  <h2>ข้อดีและข้อเสีย</h2>
+  <h3>ข้อดี</h3>
+  <ul>
+    @for (item of detail().pros; track $index) {
+    <li>{{ item }}</li>
+    }
+  </ul>
+  <h3>ข้อเสีย</h3>
+  <ul>
+    @for (item of detail().cons; track $index) {
+    <li>{{ item }}</li>
+    }
+  </ul>
+  <!-- <h2>โค้ด</h2> -->
+  <h2>ตัวอย่าง</h2>
+  <section>
+    <h3>Stepper</h3>
+    <ng-content select="stepper" />
+  </section>
+  <hr />
+  <section class="space-y-2">
+    <h3>Visualizer</h3>
+    <ng-content select="visualizer" />
+  </section>
+</article>
