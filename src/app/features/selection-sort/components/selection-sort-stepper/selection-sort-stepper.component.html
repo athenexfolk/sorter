@@ -1,0 +1,71 @@
+<div class="grid grid-cols-3 gap-2">
+  @for (preset of presets; track $index) {
+  <button
+    (click)="setArrayWith(preset.array)"
+    class="px-4 py-2 rounded-lg bg-blue-700 text-white"
+  >
+    {{ preset.label }}
+  </button>
+  }
+  <button
+    (click)="randomArray()"
+    class="px-4 py-2 rounded-lg bg-blue-700 text-white col-span-3"
+  >
+    สุ่ม
+  </button>
+</div>
+@if (currentStep()) { @let action = currentStep().action; @let highlight =
+currentStep().highlight; @let array = currentStep().array; @let min =
+currentStep().min;
+
+<div class="text-sm text-center p-4">
+  @if (action === "start") {
+  <span>เริ่มต้น</span>
+  } @if (action === "end") {
+  <span>เสร็จสิ้น</span>
+  } @if (action === "def") {
+  <span>กำหนดค่าน้อยที่สุดเริ่มต้น (Initial min) ที่ตำแหน่ง {{ min }}</span>
+  } @if (action === "compare") {
+  <span>
+    เปรียบเทียบตำแหน่งที่ {{ highlight[0] }} กับ {{ min }} ({{
+      array[highlight[0]]
+    }}
+    < {{ array[min] }}?)
+  </span>
+  } @if (action === "min") {
+  <span>
+    เพราะว่า {{ array[highlight[1]] }} <
+    {{ array[highlight[0]] }}
+    ทำการเปลี่ยนค่าที่น้อยที่สุด
+  </span>
+  } @if (action === "swap") {
+  <span>
+    พบการเปลี่ยนแปลงค่าที่น้อยที่สุด ทำการสลับค่าของตำแหน่งที่
+    {{ highlight[0] }} กับ
+    {{ highlight[1] }}
+  </span>
+  }
+</div>
+<span>{{ action === "start" ? "" : "" }}</span>
+<div class="flex gap-2 justify-center items-center">
+  @for (item of array; track $index) {
+  <div class="space-y-1">
+    <div
+      class="size-12 md:size-16 flex justify-center items-center rounded-lg"
+      [ngClass]="assignClass($index)"
+    >
+      {{ item }}
+    </div>
+    <p class="text-xs text-center">{{ $index }}</p>
+  </div>
+  }
+</div>
+}
+<app-step-controller
+  (first)="first()"
+  (last)="last()"
+  (next)="next()"
+  (prev)="prev()"
+  [disabledPrev]="currentIndex() === 0"
+  [disabledNext]="currentIndex() === steps().length - 1"
+/>
