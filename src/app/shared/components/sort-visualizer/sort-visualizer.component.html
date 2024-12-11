@@ -1,0 +1,27 @@
+<div class="flex items-end gap-0.5 h-52 relative">
+  @for (item of array; track $index) {
+  <div
+    [style.height]="item * 2 + '%'"
+    [style.background-color]="
+      'hsl(' +
+      (item / array.length) * 270 +
+      ', 100%, ' +
+      (runner.index === $index ? '0' : '50') +
+      '%)'
+    "
+    class="grow transition-all"
+  ></div>
+  }
+</div>
+<span class="text-xs text-red-600"
+  >* This visualizer demonstrates the behavior of sorting algorithms, rather
+  than real-time performance.</span
+>
+@if (controller()) {
+<app-sort-visualizer-controller
+  [isRunning]="isRunning"
+  (run)="run()"
+  (reset)="reset()"
+  (random)="random()"
+/>
+}

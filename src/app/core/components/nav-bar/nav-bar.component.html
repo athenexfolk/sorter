@@ -1,0 +1,49 @@
+<header class="px-8 py-4 flex justify-between items-center gap-8">
+  <div class="flex items-center gap-4">
+    <p class="text-2xl font-semibold">Sorter</p>
+  </div>
+  <nav>
+    <ul class="flex items-center gap-8">
+      <li>
+        <a routerLink="/" class="font-semibold hover:text-blue-500">Home</a>
+      </li>
+      <li>
+        <div
+          class="relative"
+          appClickOutside
+          (clickOutside)="algorithmPanel.close()"
+        >
+          <button
+            (click)="algorithmPanel.toggle()"
+            class="flex items-center gap-1 font-semibold hover:text-blue-500"
+          >
+            Algorithms
+            <i class="ms" [class.rotate-180]="algorithmPanel.isOpened"
+              >arrow_drop_down</i
+            >
+          </button>
+          @if (algorithmPanel.isOpened) {
+          <div
+            class="absolute top-8 right-0 w-40 rounded-xl p-2 shadow bg-white z-10"
+          >
+            <ul>
+              @for (item of algorithms; track $index) {
+              <li
+                class="p-2 rounded-lg hover:bg-zinc-50 text-center font-semibold"
+              >
+                <a
+                  [routerLink]="['/', item.path]"
+                  (click)="algorithmPanel.close()"
+                  >{{ item.name }}</a
+                >
+              </li>
+              }
+            </ul>
+          </div>
+          }
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <!-- <div></div> -->
+</header>
