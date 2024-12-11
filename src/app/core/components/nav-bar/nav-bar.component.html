@@ -5,7 +5,15 @@
   <nav>
     <ul class="flex items-center gap-8">
       <li>
-        <a routerLink="/" class="font-semibold hover:text-blue-500">Home</a>
+        <a
+          routerLink="/"
+          class="font-semibold hover:text-blue-500 flex items-center"
+        >
+          <span class="hidden md:block">Home</span>
+          <span class="md:hidden flex items-center">
+            <i class="ms">home</i>
+          </span>
+        </a>
       </li>
       <li>
         <div
