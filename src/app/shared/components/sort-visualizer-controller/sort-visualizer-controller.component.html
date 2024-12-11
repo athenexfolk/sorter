@@ -2,22 +2,27 @@
   <button
     (click)="run.emit()"
     [disabled]="isRunning()"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200"
+    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200 flex items-center gap-2"
   >
+    <i class="ms" [class.animate-spin]="isRunning()">{{
+      isRunning() ? "progress_activity" : "play_arrow"
+    }}</i>
     Run
   </button>
   <button
     (click)="reset.emit()"
     [disabled]="isRunning()"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200"
+    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200 flex items-center gap-2"
   >
+    <i class="ms">replay</i>
     Reset
   </button>
   <button
     (click)="random.emit()"
     [disabled]="isRunning()"
-    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200"
+    class="px-4 py-2 rounded-lg bg-blue-700 text-white disabled:bg-zinc-200 flex items-center gap-2"
   >
+    <i class="ms">shuffle</i>
     Random
   </button>
 </div>
